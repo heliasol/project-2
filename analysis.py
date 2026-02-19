@@ -80,18 +80,21 @@ class GeneAnalyser:
 
 
     def gene_paths(self, gene1: str, gene2: str):
-        anns1 = self._get_ann(gene1)
-        anns2 = self._get_ann(gene2)
-        
-        paths = []
+        terms1 = {a.term.go_id for a in self._get_ann(gene1) if a.term}
+        terms2 = {a.term.go_id for a in self._get_ann(gene2) if a.term}
 
-        for a1 in anns1:
-            for a2 in anns2:
-                if a1.term and a2.term:
-                    subpaths = self._hierarchy.pedigree_paths(a1.term.go_id,a2.term.go_id)
-                    paths.extend(subpaths)
-        
-        return paths
+        seen = set()
+        out = []
+        for t1 in terms1:
+            for t2 in terms2:
+                for p in self._hierarchy.pedigree_paths(t1, t2):
+                    if len(p) == 1: #in case both have the same go ids it results in a path length 1
+                        continue    #we ignore them
+                    tp = tuple(p)
+                    if tp not in seen:
+                        seen.add(tp) #with seen we avoid returning same paths multiple times
+                        out.append(p)
+        return out
     
     def shortest_gene_path(self, gene1: str, gene2: str) -> list[str] | None:
         #highly related
@@ -251,6 +254,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
 
 
     
+
 
 
 
