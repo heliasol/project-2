@@ -121,12 +121,7 @@ class GeneAnalyser:
         return None
 
 
-    def explain_gene_relationship(self, gene1: str, gene2: str) -> str:
-        paths = self.gene_paths(gene1, gene2)
-        if paths is None:
-            return f"{gene1} and {gene2} are not functionally related."
 
-        return ( f"{gene1} and {gene2} are functionally related through paths " f"{' → '.join(paths)}.")
     
 
 class NumericalAnalysis(ABC):
@@ -229,3 +224,4 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
     def compare2genes(self, gene1, gene2):
         return self.compute.at[gene1,gene2]
     
+
