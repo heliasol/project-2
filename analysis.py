@@ -241,7 +241,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
         gene_2 = self.__gene2terms.get(gene2)
 
         if not gene_1 or not gene_2:
-            return None
+            return 0.0
 
         inter = len(gene_1 & gene_2)
         union = len(gene_1 | gene_2)
@@ -251,6 +251,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
 
 
     
+
 
 
 
