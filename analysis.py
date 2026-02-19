@@ -125,7 +125,7 @@ class GeneAnalyser:
     
 
 class NumericalAnalysis(ABC):
-    def __init__(self, ontology_df : OBOParser, annotation_df : GAFParser):
+    def __init__(self, ontology_df : pd.DataFrame, annotation_df : pd.DataFrame):
         self._ontology = ontology_df
         self._annotations = annotation_df
 
@@ -237,5 +237,6 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
 
 
     
+
 
 
