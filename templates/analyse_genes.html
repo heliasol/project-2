@@ -127,9 +127,10 @@
     {% if result %}
     <div class="results">
         <h3>Results</h3>
+        
         <p> Gene 1 <a href="/gene?gene_name={{ result.gene1 }}"> {{result.gene1}}</a></p>
         <p> Gene 2 <a href="/gene?gene_name={{ result.gene2 }}"> {{result.gene2}}</a></p>
-
+        <p> The Similarity Score is: <strong>{{result.similarity_score}}</strong><p>
       {% if result.related or result.msca %}
         {% if result.ancestor %}
             <p><strong>{{ result.gene1 }}</strong> (Ancestor) is functionally more general than <strong>{{ result.gene2 }} (Descendant)</strong>.</p>
@@ -190,3 +191,4 @@
     <a href="/">Back to Home</a>
 </div>
 </html>
+
