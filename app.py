@@ -200,10 +200,15 @@ def analyse_genes():
             'longest_path': gene_analyser.longest_gene_path(gene1, gene2),
             'altshortest_path': gene_analyser.shortest_gene_path(gene2,gene1),
             'altlongest_path':gene_analyser.longest_gene_path(gene2,gene1),
-            'msca': gene_analyser.MSCA(gene1,gene2)
+            'msca': gene_analyser.MSCA(gene1,gene2),
+            'similarity_score': similarity_analyser.compare2genes(gene1,gene2)
         }
 
-    return render_template("analyse_genes.html", result=result)
+    return render_template("analyse_genes.html",
+                           result=result,
+                           gene1=result['gene1'] if result else None,
+                           gene2=result['gene2'] if result else None
+                          )
 
 @app.route('/stats')
 def stats():
@@ -275,6 +280,7 @@ def stats():
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
+
 
 
 
