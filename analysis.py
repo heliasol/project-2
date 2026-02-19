@@ -152,7 +152,7 @@ class SummaryStatistics(NumericalAnalysis):
                 "is_leaf": len(children) == 0
             })
         
-        # APPLICA UNA SOLA VOLTA
+        
         children_info = onto_df["go_id"].apply(get_children_info)
         onto_df["n_children"] = children_info["n_children"]
         onto_df["is_leaf"] = children_info["is_leaf"]
@@ -166,7 +166,7 @@ class SummaryStatistics(NumericalAnalysis):
             "namespace counts": onto_df["namespace"].value_counts(),
             "avg parents": onto_df["n_parents"].mean(),
             "avg children": onto_df["n_children"].mean(),
-            "leaf_percentage": str(leaf_count / len(onto_df) * 100) + "%",
+            "leaf_percentage": f"{leaf_count / len(onto_df) * 100:.3f}%",
             "evidence counts": ann_df["evidence"].value_counts(),
             "experimental vs computational": ann_df["is_experimental"].value_counts()
         }
@@ -185,6 +185,7 @@ class SummaryStatistics(NumericalAnalysis):
         
         plt.show() # Mostra tutto
 
+
 '''principle: the more go_term 2 gene share the more they are related'''
 class GeneSimilarityAnalysis(NumericalAnalysis):
     def __init__(self, ontology_df, annotation_df):
@@ -194,21 +195,30 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
     @property
     def compute(self):
         """
-        Returns gene-gene Jaccard similarity matrix
+        Returns gene-gene Jaccard similarity matrix (limited to top 500 most annotated genes)
+        This makes computation fast (~5 seconds) instead of hours
         """
         if self.__sim is not None:
             return self.__sim     #if it is already built it just returns it
 
-        # gene × term table (binary)   1 se gena ha quel GO c'è - 0 se non lo ha  #cross tab do so
+        # gene × term table (binary)   1 se gena ha quel GO c'è - 0 se non lo ha
         table = pd.crosstab(
             self._annotations["gene_id"],
             self._annotations["go_id"]
         )
+        
+        # most 500 annotated genes
+        # counts annotation per gene -> table with decreasing numbers top to bottom
+        gene_counts = table.sum(axis=1)
+        # most 500 annotated genes
+        top_genes = gene_counts.nlargest(500).index
+        # filters the table just to keep that 500 genes
+        table = table.loc[top_genes]
+        
+        # convert to numpy, because it's easier to work with matricial and logical operations
+        M = table.values.astype(bool)  # boolean faster
 
-        # convert to numpy, bacause it's easier to work with matricial and logical operations
-        M = table.values
-
-        n = M.shape[0]
+        n = M.shape[0]  # n = 500 
         sim = np.zeros((n, n))
 
         for i in range(n):
@@ -216,12 +226,16 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
                 intersection = np.logical_and(M[i], M[j]).sum()
                 union = np.logical_or(M[i], M[j]).sum()
 
-                sim[i, j] = intersection / union if union else 0  #jaccard similarity -> a stats method to compare two sets
+                sim[i, j] = intersection / union if union else 0  #jaccard similarity
 
-        self.__sim = pd.DataFrame(sim, index=table.index, columns=table.index)  #it returns the matrix with labled col and rows(all genes)
+        self.__sim = pd.DataFrame(sim, index=table.index, columns=table.index)
         return self.__sim
 
     def compare2genes(self, gene1, gene2):
         return self.compute.at[gene1,gene2]
+
+
+
     
+
 
