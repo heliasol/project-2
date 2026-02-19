@@ -206,7 +206,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
 
         # gene × term table (binary)   1 se gena ha quel GO c'è - 0 se non lo ha
         table = pd.crosstab(
-            self._annotations["gene_id"],
+            self._annotations["gene_name"],
             self._annotations["go_id"]
         )
         
@@ -237,7 +237,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
     def compare2genes(self, gene1, gene2):
         if self.__gene2terms is None:
             self.__gene2terms = (
-                self._annotations.groupby('gene_id')['go_id'].apply(set).to_dict()
+                self._annotations.groupby('gene_name')['go_id'].apply(set).to_dict()
             )
 
         gene_1 = self.__gene2terms.get(gene1)
@@ -254,6 +254,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
 
 
     
+
 
 
 
