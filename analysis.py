@@ -191,7 +191,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
     def __init__(self, ontology_df, annotation_df):
         super().__init__(ontology_df, annotation_df)
         self.__sim = None  #so it doesn't get built from scratch every time
-
+        self.__gene2terms =None
     @property
     def compute(self):
         """
@@ -232,11 +232,26 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
         return self.__sim
 
     def compare2genes(self, gene1, gene2):
-        return self.compute.at[gene1,gene2]
+        if self.__gene2terms is None:
+            self.__gene2terms = (
+                self._annotations.groupby('gene_id')['go_id'].apply(set).to_dict()
+            )
+
+        gene_1 = self.__gene2terms.get(gene1)
+        gene_2 = self.__gene2terms.get(gene2)
+
+        if not gene_1 or not gene_2:
+            return None
+
+        inter = len(gene_1 & gene_2)
+        union = len(gene_1 | gene_2)
+        return round(inter / union, 3) if union else 0.0
+        
 
 
 
     
+
 
 
 
