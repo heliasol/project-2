@@ -168,7 +168,7 @@ class SummaryStatistics(NumericalAnalysis):
             "avg children": onto_df["n_children"].mean(),
             "leaf_percentage": f"{leaf_count / len(onto_df) * 100:.3f}%",
             "evidence counts": ann_df["evidence"].value_counts(),
-            "experimental vs computational": ann_df["is_experimental"].value_counts()
+            "experimental vs computational": ann_df["is_experimental"].value_counts(),
             "total_genes": ann_df["gene_id"].nunique(),      
             "total_annotations": len(ann_df)
         }
@@ -248,6 +248,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
 
 
     
+
 
 
 
