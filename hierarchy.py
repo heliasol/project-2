@@ -15,7 +15,7 @@ class OntologyHierarchy:
             for parent in term.parents:
                 self.__hierarchy[parent.go_id].add(term.go_id)
 
-        return self._hierarchy
+        return self.__hierarchy
 
     def is_descendant(self, child_id: str, parent_id: str) -> bool:
         descendants = self.__ontology.get_descendants(parent_id)
@@ -89,4 +89,5 @@ class OntologyHierarchy:
 
 
         return text
+
 
