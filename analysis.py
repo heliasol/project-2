@@ -17,16 +17,13 @@ class GeneAnalyser:
                  term_collection: TermCollection,
                  hierarchy: OntologyHierarchy):
 
-        self._annotations = annotation_collection
-        self._ontology = term_collection
-        self._hierarchy = hierarchy
+        self.__annotations = annotation_collection
+        self.__ontology = term_collection
+        self.__hierarchy = hierarchy
 
 
-    def _get_ann(self, gene: str) -> list[GeneAnnotation]: #it's private helper
-        """
-        Internal helper: return all annotations of a gene.
-        """
-        return self._annotations.get_by_gene_name(gene)
+    def _get_ann(self, gene: str) -> list[GeneAnnotation]:
+        return self.__annotations.get_by_gene_name(gene)
     
     def is_gene_ancestor(self, gene1: str, gene2: str) -> bool:
         anns1 = self._get_ann(gene1)
@@ -34,7 +31,7 @@ class GeneAnalyser:
         for a1 in anns1:
             for a2 in anns2:
                 if a1.term is not None and a2.term is not None:
-                    if self._hierarchy.is_ancestor(a1.term.go_id,a2.term.go_id):
+                    if self.__hierarchy.is_ancestor(a1.term.go_id,a2.term.go_id):
                         return True
         return False
 
@@ -45,7 +42,7 @@ class GeneAnalyser:
         for a1 in anns1:
             for a2 in anns2:
                 if a1.term is not None and a2.term is not None:
-                    if self._hierarchy.is_descendant(a1.term.go_id, a2.term.go_id):
+                    if self.__hierarchy.is_descendant(a1.term.go_id, a2.term.go_id):
                         return True
         return False
     
@@ -55,7 +52,7 @@ class GeneAnalyser:
         
         for ann in anns:
             if ann.term is not None:
-                ancestors = self._hierarchy._ontology.get_ancestors(ann.term.go_id)
+                ancestors = self.__hierarchy.__ontology.get_ancestors(ann.term.go_id)
                 depths.append(len(ancestors))
         
         if not depths:
@@ -74,7 +71,7 @@ class GeneAnalyser:
 
         for t1 in terms1:
             for t2 in terms2:
-                if self._hierarchy.is_related(t1, t2):
+                if self.__hierarchy.is_related(t1, t2):
                     return True
         return False
 
@@ -87,12 +84,12 @@ class GeneAnalyser:
         out = []
         for t1 in terms1:
             for t2 in terms2:
-                for p in self._hierarchy.pedigree_paths(t1, t2):
-                    if len(p) == 1: #in case both have the same go ids it results in a path length 1
-                        continue    #we ignore them
+                for p in self.__hierarchy.pedigree_paths(t1, t2):
+                    if len(p) == 1: 
+                        continue    
                     tp = tuple(p)
                     if tp not in seen:
-                        seen.add(tp) #with seen we avoid returning same paths multiple times
+                        seen.add(tp) 
                         out.append(p)
         return out
     
@@ -179,40 +176,35 @@ class SummaryStatistics(NumericalAnalysis):
     def plots(self):
         summary = self.compute
     
-        plt.figure() # Crea una pagina bianca nuova
-        summary["namespace counts"].plot(kind="bar", title="Namespace") #ma qua me lo divide per nomi o non me li scrive?
+        plt.figure() 
+        summary["namespace counts"].plot(kind="bar", title="Namespace") 
         
-        plt.figure() # Crea un'altra pagina bianca nuova
+        plt.figure() 
         summary["evidence counts"].plot(kind="bar", title="Evidence")
         
-        plt.figure() # Crea la terza pagina bianca
+        plt.figure() 
         summary["experimental vs computational"].plot(kind="bar", title="Exp vs Comp")
         
-        plt.show() # Mostra tutto
+        plt.show() 
 
 
-'''principle: the more go_term 2 gene share the more they are related'''
 class GeneSimilarityAnalysis(NumericalAnalysis):
     def __init__(self, ontology_df, annotation_df):
         super().__init__(ontology_df, annotation_df)
-        self.__sim = None  #so it doesn't get built from scratch every time
+        self.__sim = None  
         self.__gene2terms =None
+        
     @property
     def compute(self):
-        """
-        Returns gene-gene Jaccard similarity matrix (limited to top 500 most annotated genes)
-        This makes computation fast (~5 seconds) instead of hours
-        """
         if self.__sim is not None:
-            return self.__sim     #if it is already built it just returns it
+            return self.__sim     
 
-        # gene × term table (binary)   1 se gena ha quel GO c'è - 0 se non lo ha
+        # gene × term table (binary)  
         table = pd.crosstab(
             self._annotations["gene_name"],
             self._annotations["go_id"]
         )
         
-        # most 500 annotated genes
         # counts annotation per gene -> table with decreasing numbers top to bottom
         gene_counts = table.sum(axis=1)
         # most 500 annotated genes
@@ -223,7 +215,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
         # convert to numpy, because it's easier to work with matricial and logical operations
         M = table.values.astype(bool)  # boolean faster
 
-        n = M.shape[0]  # n = 500 
+        n = M.shape[0]  # n = 500 #len #numpy
         sim = np.zeros((n, n))
 
         for i in range(n):
@@ -256,6 +248,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
 
 
     
+
 
 
 
