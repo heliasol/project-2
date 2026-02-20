@@ -1,19 +1,15 @@
-class Term: #Represents a single GO term.(nodes)  #property
-    def __init__(self, go_id: str, name: str, namespace: str,
-                 is_a: list[str] | None, definition: str,
-                 synonyms: list[str] | None = None):
+class Term: #Represents a single GO term.(nodes)
+    def __init__(self, go_id: str, name: str, namespace: str, is_a: list[str] | None, definition: str, synonyms: list[str] | None = None):
         self.__go_id = go_id
         self.__name = name
         self.__namespace = namespace
-        self.__is_a = is_a or []  # raw parent IDs from parsing
+        self.__is_a = is_a or [] 
         self.__definition = definition
         self.__synonyms = synonyms or []
-
-
         self.__parents = set()       # Term objects
         self.__children = set()      # Term objects
 
-#we use copy for sets, lists and dicts (mutable) and we don't need to use it for str and int(immutable)
+
 
     @property
     def go_id(self):
@@ -54,7 +50,7 @@ class Term: #Represents a single GO term.(nodes)  #property
 
     def __repr__(self):
         return f" *GOTerm \n go id: {self.__go_id} \n name: {self.__name} \n namespace: {self.__namespace} \n parents: {self.__parents} \n children: {self.__children} \n"
-#Now we have full collection of terms => we can start interconnecting them
+    
 
 
 class TermCollection: #the entire graph
@@ -69,7 +65,7 @@ class TermCollection: #the entire graph
         self.__terms[term.go_id] = term
 
 
-    def build_vertical_relationship(self): # it creates relationships from the is_a thing
+    def build_vertical_relationship(self): #it creates relationships from the is_a thing
             for term in self.__terms.values():
                 for parent_id in term.is_a:
                     parent = self.__terms.get(parent_id)
@@ -90,7 +86,6 @@ class TermCollection: #the entire graph
         return term.children if term else set()
 
     def get_ancestors(self, go_id: str) -> set[Term]:
-            """Return all ancestor terms of a given GO term (recursively)."""
             term = self.get_term(go_id)
             if not term:
                 return set()
@@ -107,7 +102,6 @@ class TermCollection: #the entire graph
             return ancestors
 
     def get_descendants(self, go_id: str) -> set[Term]:
-        """Return all descendant terms of a given GO term (recursively)."""
         term = self.get_term(go_id)
         if not term:
             return set()
@@ -122,3 +116,4 @@ class TermCollection: #the entire graph
 
         explore(term)
         return descendants
+
