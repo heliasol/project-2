@@ -158,7 +158,7 @@
     {% if annotations %}
         <h2>Annotations for {{ gene_name }}</h2>
         {% if gene_spec is not none %}
-            <p><strong>Specificity:</strong> {{ gene_spec|round(2) }}  – average number of ancestors across all GO terms annotated to this gene; 
+            <p><strong>Specificity: {{ gene_spec|round(2) }}</strong>  – average number of ancestors across all GO terms annotated to this gene; 
         measures how specific the gene’s annotations are 
         (1–5 low specificity, 5–15 medium, 15+ highly specific).</p>
         {% endif %}
