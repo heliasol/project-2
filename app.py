@@ -218,6 +218,8 @@ def stats():
     "avg_parents": data["summary"]["avg parents"],
     "avg_children": data["summary"]["avg children"],
     "exp_ratio": f"{(data['summary']['experimental vs computational'].get(True,0) / data['summary']['experimental vs computational'].sum() * 100):.1f}%",
+    "total_genes": data["summary"]["total_genes"],        
+    "total_annotations": data["summary"]["total_annotations"],
     "ns_bp": data["summary"]["namespace counts"].get("biological_process", 0),
     "ns_mf": data["summary"]["namespace counts"].get("molecular_function", 0),
     "ns_cc": data["summary"]["namespace counts"].get("cellular_component", 0),
@@ -280,6 +282,7 @@ def stats():
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
+
 
 
 
