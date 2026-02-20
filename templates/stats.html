@@ -163,7 +163,7 @@
     
     <h2>Statistical Overview</h2>
     
-    <!-- ===== KPI BOXES ===== -->
+    
     <div class="stats">
         <div class="stat-box">
             <h3>Total Terms</h3>
@@ -185,9 +185,17 @@
             <h3>Experimental</h3>
             <div class="stat-value">{{ exp_ratio }}</div>
         </div>
+        <div class="stat-box">
+        <h3>Total Genes</h3>
+        <div class="stat-value">{{ total_genes }}</div>
+    </div>
+    <div class="stat-box">
+        <h3>Total Annotations</h3>
+        <div class="stat-value">{{ total_annotations }}</div>
+    </div>
     </div>
     
-    <!-- ===== GRAPHS ===== -->
+    
     <div class="chart-container">
         <h3>Namespace Distribution</h3>
         <canvas id="nsChart"></canvas>
@@ -203,7 +211,7 @@
         <canvas id="expChart"></canvas>
     </div>
     
-    <!-- ===== SIMILARITY SEARCH (SENZA JAVASCRIPT!) ===== -->
+    
     <div class="similarity-section">
         <h3>Gene Similarity Search</h3>
         <p style="margin: 10px 0; color: #5d4037;">
@@ -211,7 +219,7 @@
             Results are limited to 100 pairs for performance.
         </p>
         
-        <!-- FORM HTML SEMPLICE (niente JavaScript!) -->
+        
         <form method="GET" action="/stats">
             <label for="min">Min:</label>
             <input type="number" id="min" name="min" min="0" max="1" step="0.1" 
@@ -229,12 +237,12 @@
             {% endif %}
         </form>
         
-        <!-- MESSAGGIO DI AVVISO (se presente) -->
+        
         {% if warning %}
             <div class="warning-box">{{ warning }}</div>
         {% endif %}
         
-        <!-- RISULTATI (se presenti) -->
+        
         {% if similarity_results %}
             <h4 style="margin-top: 20px;">Results ({{ similarity_results|length }} pairs):</h4>
             <table>
@@ -266,7 +274,7 @@
         <a href="/">Back to Home</a>
     </div>
     
-    <!-- ===== CHARTS (Chart.js è ancora necessario per i grafici) ===== -->
+    
     <script>
         new Chart(document.getElementById('nsChart'), {
             type: 'bar',
@@ -327,4 +335,5 @@
 
     </script>
 </body>
+
 </html>
