@@ -4,26 +4,26 @@ from annotations import *
 class OntologyHierarchy:
 
     def __init__ (self, term_collection: TermCollection) -> None:
-        self._ontology = term_collection
-        self._hierarchy : dict[str, set[str]] = {}
+        self.__ontology = term_collection
+        self.__hierarchy : dict[str, set[str]] = {}
 
     def build_tree(self) -> dict[str, set[str]]:
-        for go_id in self._ontology.terms:
-            self._hierarchy[go_id]= set()
+        for go_id in self.__ontology.terms:
+            self.__hierarchy[go_id]= set()
 
-        for term in self._ontology.terms.values():
+        for term in self.__ontology.terms.values():
             for parent in term.parents:
-                self._hierarchy[parent.go_id].add(term.go_id)
+                self.__hierarchy[parent.go_id].add(term.go_id)
 
         return self._hierarchy
 
     def is_descendant(self, child_id: str, parent_id: str) -> bool:
-        descendants = self._ontology.get_descendants(parent_id)
+        descendants = self.__ontology.get_descendants(parent_id)
         descendant_ids : set[str] = {t.go_id for t in descendants}
         return child_id in descendant_ids
 
     def is_ancestor(self, parent_id: str, child_id: str) -> bool:
-        ancestors = self._ontology.get_ancestors(child_id)
+        ancestors = self.__ontology.get_ancestors(child_id)
         ancestor_ids : set[str] = {t.go_id for t in ancestors}
         return parent_id in ancestor_ids
 
@@ -46,7 +46,7 @@ class OntologyHierarchy:
         
         paths=[]
 
-        for child in self._hierarchy.get(parent_id, set()):
+        for child in self.__hierarchy.get(parent_id, set()):
             subpaths = self.pedigree_paths(child, child_id, visited.copy())
             for sp in subpaths:
                 paths.append([parent_id] + sp)
@@ -63,8 +63,8 @@ class OntologyHierarchy:
 
 
     def MSCA(self, go_id1: str, go_id2: str) -> str | None: #Most Specific Common Ancestor
-        ancestors1 = self._ontology.get_ancestors(go_id1)
-        ancestors2 = self._ontology.get_ancestors(go_id2)
+        ancestors1 = self.__ontology.get_ancestors(go_id1)
+        ancestors2 = self.__ontology.get_ancestors(go_id2)
         
         common = ancestors1.intersection(ancestors2)
 
@@ -80,12 +80,13 @@ class OntologyHierarchy:
 
     def __repr__(self):
         text =''
-        for parent in self._hierarchy:
+        for parent in self.__hierarchy:
 
-            if len(self._hierarchy[parent]) < 1:
+            if len(self.__hierarchy[parent]) < 1:
                 text += parent + '-->' + 'no children' + '\n'
             else:
-                text += parent + '-->' + str(self._hierarchy[parent]) +'\n'
+                text += parent + '-->' + str(self.__hierarchy[parent]) +'\n'
 
 
         return text
+
