@@ -36,7 +36,6 @@ class OntologyHierarchy:
         if visited is None:
             visited = set()
 
-         # prevent cycles
         if parent_id in visited:
             return []
 
@@ -56,7 +55,6 @@ class OntologyHierarchy:
     def shortest_path(self, parent_id: str, child_id: str)  -> list[str] | None:
         paths = self.pedigree_paths(parent_id, child_id)
         return min(paths, key=len) if paths else None
-    #key is a function that tells Python how to compare elements.
 
 
     def longest_path(self, parent_id: str, child_id: str)  -> list[str] | None:
@@ -88,5 +86,6 @@ class OntologyHierarchy:
                 text += parent + '-->' + 'no children' + '\n'
             else:
                 text += parent + '-->' + str(self._hierarchy[parent]) +'\n'
+
 
         return text
