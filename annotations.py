@@ -4,7 +4,7 @@ class GeneAnnotation:
         branch_map = {
         "P": "Biological Process",
         "F": "Molecular Function",
-        "C": "Cellular Component"} #NEW - fixed placement  # convert GAF aspect to branch
+        "C": "Cellular Component"}  # convert GAF aspect to branch
 
         def __init__(self, gene_id: str,
                      gene_name: str,      # DB Object Symbol (col 3)
@@ -116,33 +116,21 @@ class AnnotationCollection: # holds all annotations and provides query functions
         for ann in self.annotations:
             ann.link_term(term_collection)
 
-    def get_by_gene_id(self, gene_id: str) -> list[GeneAnnotation]:
-        """
-        Return all annotations for a specific gene_id (DB Object ID, col 2).
-        """
+    def get_by_gene_id(self, gene_id: str) -> list[GeneAnnotation]: #Return all annotations for a specific gene_id 
         return [ann for ann in self._annotations if ann.gene_id == gene_id]
 
-    def get_by_gene_name(self, gene_name: str) -> list[GeneAnnotation]:
-        """
-        Return all annotations for a specific gene symbol/name (col 3).
-        """
+    def get_by_gene_name(self, gene_name: str) -> list[GeneAnnotation]: #Return all annotations for a specific gene name 
         return [ann for ann in self._annotations if ann.gene_name == gene_name]
 
-    def get_by_term(self, go_id: str) -> list[GeneAnnotation]:
-        """Return all annotations for a specific GO term."""
+    def get_by_term(self, go_id: str) -> list[GeneAnnotation]: #Return all annotations for a specific GO term
         return [ann for ann in self._annotations if ann.go_id == go_id]
 
-    def get_by_aspect(self, aspect: str) -> list[GeneAnnotation]:
-        """
-        Return all annotations with a specific aspect code (P, F, C).
-        """
+    def get_by_aspect(self, aspect: str) -> list[GeneAnnotation]: #Return all annotations with a specific aspect code (P, F, C)
         return [ann for ann in self._annotations if ann.aspect == aspect]
 
-    def get_by_evidence(self, evidence: str) -> list[GeneAnnotation]:
-        """
-        Return all annotations with a specific evidence code.
-        """
+    def get_by_evidence(self, evidence: str) -> list[GeneAnnotation]: #Return all annotations with a specific evidence code.
         return [ann for ann in self._annotations if ann.evidence == evidence]
 
     def __repr__(self):
+
         return f"<AnnotationCollection: {len(self.annotations)} annotations>"
