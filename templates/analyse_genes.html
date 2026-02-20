@@ -123,6 +123,12 @@
             <button type="submit">Analyse</button>
         </form>
     </div>
+    
+{% if error %}
+<div class="results">
+    <p><strong style="color: darkred;">{{ error }}</strong></p>
+</div>
+{% endif %}
 
     {% if result %}
     <div class="results">
@@ -191,4 +197,5 @@
     <a href="/">Back to Home</a>
 </div>
 </html>
+
 
