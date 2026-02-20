@@ -202,8 +202,8 @@ def analyse_genes():
         gene1 = request.form["gene1"]
         gene2 = request.form["gene2"]
 
-        g1= annotations.get_by_gene(gene1)
-        g2=annotations.get_by_gene(gene2)
+        g1= annotations.get_by_gene_name(gene1)
+        g2=annotations.get_by_gene_name(gene2)
 
         if not g1:
             error = f'Gene {gene1} not found'
@@ -305,6 +305,7 @@ def stats():
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
+
 
 
 
