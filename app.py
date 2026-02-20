@@ -154,60 +154,83 @@ def term_page():
 @app.route("/analyse_terms", methods=["GET", "POST"])
 def analyse_terms():
     result = None
+    error = None
+    go1 = go2 = None
 
     if request.method =='POST': 
         go1 = request.form["go1"]
         go2 = request.form["go2"]
 
-        result = {
-            'go1': go1,
-            'go2' : go2,
-            'related': hierarchy.is_related(go1,go2),
-            'ancestor' : hierarchy.is_ancestor(go1, go2) ,
-            "descendant": hierarchy.is_descendant(go1,go2),
-            "msca": hierarchy.MSCA(go1,go2),
-            'paths': hierarchy.pedigree_paths(go1,go2),
-            'altpaths':hierarchy.pedigree_paths(go2,go1),
-            "shortest_path": hierarchy.shortest_path(go1,go2),
-            'altshortest_path': hierarchy.shortest_path(go2,go1),
-            'longest_path':hierarchy.longest_path(go1,go2),
-            'altlongest_path': hierarchy.longest_path(go2,go1)
+        term1 = terms.get_term(go1)
+        term2 = terms.get_term(go2)
+
+        if not term1:
+            error = f'GO ID {go1} not found'
+        elif not term2:
+            error = f'GO ID {go2} not found'
+        else:
+            result = {
+                'go1': go1,
+                'go2' : go2,
+                'related': hierarchy.is_related(go1,go2),
+                'ancestor' : hierarchy.is_ancestor(go1, go2) ,
+                "descendant": hierarchy.is_descendant(go1,go2),
+                "msca": hierarchy.MSCA(go1,go2),
+                'paths': hierarchy.pedigree_paths(go1,go2),
+                'altpaths':hierarchy.pedigree_paths(go2,go1),
+                "shortest_path": hierarchy.shortest_path(go1,go2),
+                'altshortest_path': hierarchy.shortest_path(go2,go1),
+                'longest_path':hierarchy.longest_path(go1,go2),
+                'altlongest_path': hierarchy.longest_path(go2,go1)
             }
 
  
     return render_template ('analyse_terms.html',
                             result=result ,
-                            go1=result['go1'] if result else None,
-                            go2=result['go2'] if result else None)
+                            error=error,
+                            go1=go1,
+                            go2=go2)
 
 
 @app.route('/analyse_genes', methods= ['GET', 'POST'])
 def analyse_genes():
     result= None
+    error = None
+    gene1 = gene2 = None
+    
     if request.method == "POST":
         gene1 = request.form["gene1"]
         gene2 = request.form["gene2"]
 
-        result = {
-            "gene1": gene1,
-            "gene2": gene2,
-            'related': gene_analyser.genes_functionally_related(gene1,gene2),
-            "ancestor": gene_analyser.is_gene_ancestor(gene1, gene2),
-            "descendant": gene_analyser.is_gene_descendant(gene1, gene2),
-            "paths": gene_analyser.gene_paths(gene1,gene2),
-            'altpaths': gene_analyser.gene_paths(gene2,gene1),
-            "shortest_path": gene_analyser.shortest_gene_path(gene1, gene2),
-            'longest_path': gene_analyser.longest_gene_path(gene1, gene2),
-            'altshortest_path': gene_analyser.shortest_gene_path(gene2,gene1),
-            'altlongest_path':gene_analyser.longest_gene_path(gene2,gene1),
-            'msca': gene_analyser.MSCA(gene1,gene2),
-            'similarity_score': similarity_analyser.compare2genes(gene1,gene2)
-        }
+        g1= annotations.get_by_gene(gene1)
+        g2=annotations.get_by_gene(gene2)
+
+        if not g1:
+            error = f'Gene {gene1} not found'
+        elif not g2:
+            error = f'Gene {gene2} not found'
+        else:
+            result = {
+                "gene1": gene1,
+                "gene2": gene2,
+                'related': gene_analyser.genes_functionally_related(gene1,gene2),
+                "ancestor": gene_analyser.is_gene_ancestor(gene1, gene2),
+                "descendant": gene_analyser.is_gene_descendant(gene1, gene2),
+                "paths": gene_analyser.gene_paths(gene1,gene2),
+                'altpaths': gene_analyser.gene_paths(gene2,gene1),
+                "shortest_path": gene_analyser.shortest_gene_path(gene1, gene2),
+                'longest_path': gene_analyser.longest_gene_path(gene1, gene2),
+                'altshortest_path': gene_analyser.shortest_gene_path(gene2,gene1),
+                'altlongest_path':gene_analyser.longest_gene_path(gene2,gene1),
+                'msca': gene_analyser.MSCA(gene1,gene2),
+                'similarity_score': similarity_analyser.compare2genes(gene1,gene2)
+            }
 
     return render_template("analyse_genes.html",
                            result=result,
-                           gene1=result['gene1'] if result else None,
-                           gene2=result['gene2'] if result else None
+                           error= error,
+                           gene1=gene1,
+                           gene2=gene2
                           )
 
 @app.route('/stats')
@@ -282,6 +305,7 @@ def stats():
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
+
 
 
 
