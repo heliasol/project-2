@@ -113,7 +113,7 @@ class GeneAnalyser:
                 if a1.term is None or a2.term is None:
                     continue
                 
-                msca = self._hierarchy.MSCA(a1.term.go_id, a2.term.go_id)
+                msca = self.__hierarchy.MSCA(a1.term.go_id, a2.term.go_id)
 
                 if msca:
                     return msca   # return the first common ancestor found
@@ -248,6 +248,7 @@ class GeneSimilarityAnalysis(NumericalAnalysis):
 
 
     
+
 
 
 
